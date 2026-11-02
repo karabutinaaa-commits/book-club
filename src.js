@@ -4,8 +4,8 @@ let state={books:[],members:[]},actor=localStorage.getItem('btp-member')||'',pas
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const dedupeAuthors=value=>[...new Set((Array.isArray(value)?value:String(value||'').split(',')).map(s=>String(s).trim()).filter(Boolean))].join(', ');
 const scores=[{n:2,t:'Must read'},{n:1,t:'Interested'},{n:0,t:'Neutral'},{n:-1,t:'Not keen'},{n:-2,t:'Pass'}];
-const knownGoodreads={'The Vanishing Half':'https://www.goodreads.com/book/show/54482639-the-vanishing-half','Tomorrow, and Tomorrow, and Tomorrow':'https://www.goodreads.com/book/show/214335028-tomorrow-and-tomorrow-and-tomorrow','Demon Copperhead':'https://www.goodreads.com/book/show/60194162-demon-copperhead'};
-const goodreadsUrl=b=>/^https:\/\/(?:www\.)?goodreads\.com\/book\/show\/\d+/i.test(b.goodreadsUrl||'')?b.goodreadsUrl:knownGoodreads[b.title]||'https://www.goodreads.com/search?'+new URLSearchParams({q:b.title+' '+b.author});
+const knownGoodreads={'49f97834-f4ff-4770-ad5c-79d968ddbaa6':'https://www.goodreads.com/book/show/54482639','a012ce65-a3d1-47ea-b03e-8077013fc3a9':'https://www.goodreads.com/book/show/214335028','122a2d83-cfad-4b67-8888-00d3c51c1e26':'https://www.goodreads.com/book/show/60194162'};
+const goodreadsUrl=b=>/^https:\/\/(?:www\.)?goodreads\.com\/book\/show\/\d+/i.test(b.goodreadsUrl||'')?b.goodreadsUrl:knownGoodreads[b.id]||'https://www.goodreads.com/search?'+new URLSearchParams({q:b.title+' '+b.author});
 async function api(payload){const res=await fetch('/api/club',{method:payload?'POST':'GET',headers:{'content-type':'application/json','x-club-password':password},body:payload?JSON.stringify({...payload,actor}):undefined});const data=await res.json();if(!res.ok)throw Error(data.error||'Something went wrong');return data;}
 async function refresh(){try{state=await api();if(!state.members.includes(actor))actor='';render()}catch(e){sessionStorage.removeItem('btp-password');password='';render(e.message)}}
 let mutationQueue=Promise.resolve();
