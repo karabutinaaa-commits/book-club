@@ -35,6 +35,7 @@ export default async (request)=>{
  }else if(data.action==='status'){
   if(!book)return json({error:'Book not found.'},404);
   if(!['nominated','reading','finished'].includes(data.status))return json({error:'Invalid status.'},400);
+  if(book.status==='nominated'&&data.status==='finished')return json({error:'Start reading this book before marking it finished.'},409);
   if(data.meeting!==undefined){
    const date=clean(data.meeting?.date),time=clean(data.meeting?.time),location=clean(data.meeting?.location);
    if(date&&!/^\d{4}-\d{2}-\d{2}$/.test(date))return json({error:'Invalid meeting date.'},400);
