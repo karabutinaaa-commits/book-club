@@ -6,7 +6,8 @@ const dedupeAuthors=value=>[...new Set((Array.isArray(value)?value:String(value|
 const scores=[{n:2,t:'Must read'},{n:1,t:'Interested'},{n:0,t:'Neutral'},{n:-1,t:'Not keen'},{n:-2,t:'Pass'}];
 async function api(payload){const res=await fetch('/api/club',{method:payload?'POST':'GET',headers:{'content-type':'application/json','x-club-password':password},body:payload?JSON.stringify({...payload,actor}):undefined});const data=await res.json();if(!res.ok)throw Error(data.error||'Something went wrong');return data;}
 async function refresh(){try{state=await api();if(!state.members.includes(actor))actor='';render()}catch(e){sessionStorage.removeItem('btp-password');password='';render(e.message)}}
-async function mutate(payload){try{loading=true;state=await api(payload);if(payload.action==='status'){tab=payload.status;query='';statusBook=null}addOpen=false;selected=null;editing=null;render()}catch(e){alert(e.message)}finally{loading=false}}
+let mutationQueue=Promise.resolve();
+function mutate(payload){mutationQueue=mutationQueue.then(async()=>{try{loading=true;state=await api(payload);if(payload.action==='status'){tab=payload.status;query='';statusBook=null}addOpen=false;selected=null;editing=null;render()}catch(e){alert(e.message)}finally{loading=false}});return mutationQueue}
 const stats=b=>{const v=Object.values(b.votes||{});return {count:v.length,total:v.reduce((a,c)=>a+c,0),average:v.length?v.reduce((a,c)=>a+c,0)/v.length:0,positive:v.filter(x=>x>0).length}};
 const ranked=books=>[...books].sort((a,b)=>{let x=stats(a),y=stats(b);return y.average-x.average||y.positive-x.positive||y.count-x.count||a.title.localeCompare(b.title)});
 function render(error=''){
