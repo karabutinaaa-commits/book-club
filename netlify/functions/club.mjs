@@ -23,8 +23,10 @@ export default async (request)=>{
  if(data.action==='add'){
   const title=clean(data.title),author=clean(data.author);
   if(!title||!author)return json({error:'Title and author are required.'},400);
+  const goodreadsUrl=clean(data.goodreadsUrl);
+  if(goodreadsUrl&&!/^https:\/\/(?:www\.)?goodreads\.com\/book\/show\/\d+(?:[-/?#][^\s]*)?$/i.test(goodreadsUrl))return json({error:'Use a Goodreads book page link.'},400);
   if(state.books.some(b=>b.title.toLowerCase()===title.toLowerCase()&&b.author.toLowerCase()===author.toLowerCase()))return json({error:'This book is already nominated.'},409);
-  state.books.push({id:newId,title,author,cover:clean(data.cover).slice(0,500),genre:clean(data.genre),note:clean(data.note),nominatedBy:actor,status:'nominated',votes:{},createdAt:new Date().toISOString()});
+  state.books.push({id:newId,title,author,cover:clean(data.cover).slice(0,500),genre:clean(data.genre),note:clean(data.note),goodreadsUrl,nominatedBy:actor,status:'nominated',votes:{},createdAt:new Date().toISOString()});
  }else if(data.action==='vote'){
   if(!book||book.status!=='nominated')return json({error:'Book unavailable for voting.'},404);
   if(!Number.isInteger(data.score)||data.score< -2||data.score>2)return json({error:'Invalid vote.'},400);
