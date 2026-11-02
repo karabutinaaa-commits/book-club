@@ -1,1 +1,17 @@
-{"name":"between-the-pages","version":"1.0.0","type":"module","scripts":{"dev":"netlify dev","build":"vite","preview":"vite preview"},"dependencies":{"@netlify/blobs":"^9.1.2","vite":"^6.3.0"},"devDependencies":{"netlify-cli":"^22.0.0"}}
+{
+  "name": "between-the-pages",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^9.1.2",
+    "vite": "^6.3.0"
+  },
+  "devDependencies": {
+    "netlify-cli": "^22.0.0"
+  }
+}
