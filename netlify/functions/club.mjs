@@ -44,7 +44,7 @@ export default async (request)=>{
   if(!book)return json({error:'Book not found.'},404);
   state.books=state.books.filter(b=>b.id!==id);
  }else return json({error:'Unknown action.'},400);
- const result=await store.setJSON('state',state,entry?{onlyIfMatch:entry.etag}:{onlyIfNew:true});
+ const result=await store.set('state',JSON.stringify(state),entry?{onlyIfMatch:entry.etag}:{onlyIfNew:true});
  if(result.modified)return json({books:state.books,members});
  }
  return json({error:'The shelf is busy. Please try again.'},503);
